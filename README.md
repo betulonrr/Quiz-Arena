@@ -13,16 +13,27 @@ Tek oyunculu rekor modu ve aynı cihazda 2 oyunculu düello modu desteklenmekted
   Özellikler
 
  8 Kategori — Karışık, Bilim, Tarih, Genel Kültür, Spor, Coğrafya, Teknoloji, Matematik
- 3 Zorluk Seviyesi — Kolay (20sn/+10p) · Orta (15sn/+20p) · Zor (10sn/+30p)
+ 
+  3 Zorluk Seviyesi — Kolay (20sn/+10p) · Orta (15sn/+20p) · Zor (10sn/+30p)
+  
  2 Oyuncu Modu — Aynı cihazda sıralı düello, canlı puan dengesi çubuğu
+ 
  Seri Sistemi — 3+ arka arkaya doğruda animasyonlu ateş serisi
+ 
  Otomatik Seviye Atlama — Her 5 soruda zorluk bir kademe artar
+ 
  Ses Sistemi — Web Audio API ile algoritmik ses efektleri ve arka plan müziği (harici dosya yok)
+ 
  Canvas Zamanlayıcı — Renk geçişli (yeşil→sarı→kırmızı) dairesel geri sayım
+ 
  Canvas Grafik — Oyun sonunda her sorunun cevap süresi bar chart olarak gösterilir
+ 
  Canvas Konfeti — Kazanma anında 60 parçacıklı fizik tabanlı konfeti animasyonu localStorage Skor Tablosu — Puanlar kalıcı olarak kaydedilir,  kategori/zorluk filtrelemesi var
+ 
  TR / EN Dil Desteği — Anlık dil değiştirme, sayfa yenilemesi gerekmez
+ 
  Tam Responsive — Mobil, tablet, masaüstü ve yatay mod desteği (5 breakpoint)
+ 
 
 
  Dosya Yapısı
