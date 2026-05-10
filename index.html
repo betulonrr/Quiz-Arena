@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <!-- Mobil cihazlarda tam genişlik için viewport ayarı -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Quiz Arena</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- =====================================================================
+       EKRAN 0: YÜKLEME / SPLASH
+       Sayfa açılırken kısa bir giriş animasyonu gösterir
+  ====================================================================== -->
+  <div id="screen-splash" class="screen active">
+    <div class="splash-inner">
+      <div class="splash-logo">
+        <!-- SVG ikon: oyun kumandası -->
+        <svg class="splash-svg" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="80" height="80" rx="20" fill="#534AB7"/>
+          <rect x="18" y="28" width="44" height="24" rx="12" fill="white" opacity="0.9"/>
+          <circle cx="54" cy="40" r="5" fill="#534AB7"/>
+          <circle cx="46" cy="34" r="3" fill="#534AB7" opacity="0.6"/>
+          <rect x="22" y="38" width="10" height="4" rx="2" fill="#534AB7"/>
+          <rect x="25" y="35" width="4" height="10" rx="2" fill="#534AB7"/>
+        </svg>
+        <h1 class="splash-title">Quiz Arena</h1>
+        <p class="splash-sub">Bilgini test et, rakibini geç</p>
+      </div>
+      <div class="splash-loader">
+        <!-- CSS animasyonlu yükleme çubuğu -->
+        <div class="loader-bar"><div class="loader-fill"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       EKRAN 1: ANA MENÜ
+       Oyuncu adı, mod, kategori, zorluk ve soru sayısı seçimi
+  ====================================================================== -->
+  <div id="screen-menu" class="screen">
+    <div class="page-wrap">
+
+      <!-- Üst bar: logo + dil + ses kontrolleri -->
+      <header class="top-bar">
+        <div class="logo-row">
+          <!-- Küçük SVG kumanda ikonu -->
+          <svg class="logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="32" height="32" rx="8" fill="#534AB7"/>
+            <rect x="6" y="10" width="20" height="12" rx="6" fill="white" opacity="0.9"/>
+            <circle cx="22" cy="16" r="2.5" fill="#534AB7"/>
+            <circle cx="18" cy="13" r="1.5" fill="#534AB7" opacity="0.6"/>
+            <rect x="8" y="15" width="5" height="2" rx="1" fill="#534AB7"/>
+            <rect x="9.5" y="13.5" width="2" height="5" rx="1" fill="#534AB7"/>
+          </svg>
+          <span class="logo-text">Quiz Arena</span>
+        </div>
+        <div class="header-controls">
+          <div class="lang-toggle">
+            <button class="lang-btn active" onclick="setLang('tr')">TR</button>
+            <button class="lang-btn" onclick="setLang('en')">EN</button>
+          </div>
+          <!-- Ses efekti toggle butonu -->
+          <button class="ctrl-btn" id="sound-btn" onclick="toggleSound()" title="Ses Efektleri">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <path id="sound-wave" d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            </svg>
+          </button>
+          <!-- Müzik toggle butonu -->
+          <button class="ctrl-btn" id="music-btn" onclick="toggleMusic()" title="Müzik">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18V5l12-2v13"/>
+              <circle cx="6" cy="18" r="3"/>
+              <circle cx="18" cy="16" r="3"/>
+            </svg>
+          </button>
+          <!-- Nasıl oynanır butonu -->
+          <button class="ctrl-btn" onclick="goHowTo()" title="Nasıl Oynanır?">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- İsim girişi (tek oyuncu için de) -->
+      <div class="card section-card">
+        <div class="section-label" id="lbl-name">Oyuncu Adın</div>
+        <input class="input-field" id="solo-name" placeholder="Adını gir..." maxlength="20"/>
+      </div>
+
+      <!-- Oyun modu seçimi -->
+      <div class="card section-card">
+        <div class="section-label" id="lbl-mode">Oyun Modu</div>
+        <div class="mode-row">
+          <div class="mode-card selected" id="mc-solo" onclick="setMode('solo', this)">
+            <!-- Tek oyuncu ikonu -->
+            <div class="mode-icon">
+              <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="20" cy="14" r="7" fill="#534AB7" opacity="0.8"/>
+                <path d="M6 34c0-7.7 6.3-14 14-14s14 6.3 14 14" stroke="#534AB7" stroke-width="3" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="mode-label" id="mode-solo-lbl">Tek Oyuncu</div>
+            <div class="mode-sub" id="mode-solo-sub">Rekorunu kır</div>
+          </div>
+          <div class="mode-card" id="mc-vs" onclick="setMode('vs', this)">
+            <!-- İki oyuncu ikonu -->
+            <div class="mode-icon">
+              <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="13" cy="13" r="6" fill="#534AB7" opacity="0.7"/>
+                <circle cx="27" cy="13" r="6" fill="#D85A30" opacity="0.7"/>
+                <path d="M2 34c0-6 5-11 11-11" stroke="#534AB7" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M38 34c0-6-5-11-11-11" stroke="#D85A30" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="20" y1="18" x2="20" y2="34" stroke="#888" stroke-width="2" stroke-dasharray="3 3"/>
+              </svg>
+            </div>
+            <div class="mode-label" id="mode-vs-lbl">2 Oyuncu</div>
+            <div class="mode-sub" id="mode-vs-sub">Aynı cihaz düellosu</div>
+          </div>
+        </div>
+
+        <!-- 2 oyuncu modu isim alanları (gizli başlar) -->
+        <div id="vs-names" style="display:none; margin-top:.8rem;">
+          <input class="input-field" id="p1-name" placeholder="Oyuncu 1 adı" maxlength="16" style="margin-bottom:8px;"/>
+          <input class="input-field" id="p2-name" placeholder="Oyuncu 2 adı" maxlength="16"/>
+        </div>
+      </div>
+
+      <!-- Kategori seçimi -->
+      <div class="card section-card">
+        <div class="section-label" id="lbl-cat">Kategori</div>
+        <div class="cat-grid" id="cat-grid"></div>
+      </div>
+
+      <!-- Zorluk seçimi -->
+      <div class="card section-card">
+        <div class="section-label" id="lbl-diff">Zorluk Seviyesi</div>
+        <div class="diff-row">
+          <button class="diff-btn easy selected" id="d-easy" onclick="setDiff('easy', this)">
+            <span class="diff-dot easy"></span><span id="lbl-easy">Kolay</span>
+            <small id="lbl-easy-pts">+10 puan</small>
+          </button>
+          <button class="diff-btn medium" id="d-med" onclick="setDiff('medium', this)">
+            <span class="diff-dot medium"></span><span id="lbl-med">Orta</span>
+            <small id="lbl-med-pts">+20 puan</small>
+          </button>
+          <button class="diff-btn hard" id="d-hard" onclick="setDiff('hard', this)">
+            <span class="diff-dot hard"></span><span id="lbl-hard">Zor</span>
+            <small id="lbl-hard-pts">+30 puan</small>
+          </button>
+        </div>
+      </div>
+
+      <!-- Soru sayısı seçimi -->
+      <div class="card section-card">
+        <div class="section-label" id="lbl-qcount">Soru Sayısı</div>
+        <div class="qcount-row">
+          <button class="qcount-btn" id="q5"  onclick="setQCount(5, this)">5</button>
+          <button class="qcount-btn selected" id="q10" onclick="setQCount(10, this)">10</button>
+          <button class="qcount-btn" id="q15" onclick="setQCount(15, this)">15</button>
+        </div>
+      </div>
+
+      <!-- Başla ve skor tablosu butonları -->
+      <button class="start-btn" id="start-btn" onclick="startGame()" disabled>
+        <span id="start-lbl">Başla</span>
+        <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+      <button class="lb-btn" onclick="goLB()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+        <span id="lbl-lb">Skor Tablosu</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       EKRAN 2: NASIL OYNANIR
+       Oyunun kurallarını ve ipuçlarını açıklar
+  ====================================================================== -->
+  <div id="screen-howto" class="screen">
+    <div class="page-wrap">
+      <div class="back-bar">
+        <button class="back-btn" onclick="goMenu()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          <span id="howto-back">Ana Menü</span>
+        </button>
+        <h2 id="howto-title">Nasıl Oynanır?</h2>
+      </div>
+
+      <!-- Adım adım kural kartları -->
+      <div class="howto-grid">
+
+        <div class="howto-card">
+          <div class="howto-num">1</div>
+          <div class="howto-icon">
+            <!-- Ayarlar ikonu -->
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="24" cy="24" r="20" fill="#EEEDFE"/>
+              <circle cx="24" cy="24" r="7" stroke="#534AB7" stroke-width="2.5"/>
+              <path d="M24 10v4M24 34v4M10 24h4M34 24h4" stroke="#534AB7" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="howto-text">
+            <strong id="howto-s1-title">Ayarlarını Seç</strong>
+            <p id="howto-s1-desc">Kategori, zorluk seviyesi ve soru sayısını belirle. İstersen arkadaşınla 2 oyuncu modunda oyna!</p>
+          </div>
+        </div>
+
+        <div class="howto-card">
+          <div class="howto-num">2</div>
+          <div class="howto-icon">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="24" cy="24" r="20" fill="#EAF3DE"/>
+              <path d="M14 24l7 7 13-13" stroke="#3B6D11" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="howto-text">
+            <strong id="howto-s2-title">Soruları Cevapla</strong>
+            <p id="howto-s2-desc">Her soruda 4 seçenek var. Doğru cevabı bul ve tıkla. Süre dolmadan cevaplamaya çalış!</p>
+          </div>
+        </div>
+
+        <div class="howto-card">
+          <div class="howto-num">3</div>
+          <div class="howto-icon">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="24" cy="24" r="20" fill="#FAEEDA"/>
+              <path d="M24 14v10l6 4" stroke="#854F0B" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="24" cy="24" r="7" stroke="#854F0B" stroke-width="2" opacity="0.4"/>
+            </svg>
+          </div>
+          <div class="howto-text">
+            <strong id="howto-s3-title">Zamana Dikkat Et</strong>
+            <p id="howto-s3-desc">Kolay: 20 sn | Orta: 15 sn | Zor: 10 sn. Süre dolunca soru yanlış sayılır. Çember sayacı izle!</p>
+          </div>
+        </div>
+
+        <div class="howto-card">
+          <div class="howto-num">4</div>
+          <div class="howto-icon">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="24" cy="24" r="20" fill="#FCEBEB"/>
+              <path d="M24 14l2.47 5 5.53.8-4 3.9.94 5.5L24 26.6l-4.94 2.6.94-5.5-4-3.9 5.53-.8L24 14z" fill="#A32D2D" opacity="0.8"/>
+            </svg>
+          </div>
+          <div class="howto-text">
+            <strong id="howto-s4-title">Puan Kazan</strong>
+            <p id="howto-s4-desc">Kolay +10, Orta +20, Zor +30 puan. Arka arkaya doğru cevapla seri bonusu kazanırsın!</p>
+          </div>
+        </div>
+
+        <div class="howto-card">
+          <div class="howto-num">5</div>
+          <div class="howto-icon">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="24" cy="24" r="20" fill="#E6F1FB"/>
+              <path d="M16 32V20M24 32V16M32 32V24" stroke="#185FA5" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="howto-text">
+            <strong id="howto-s5-title">Seviye Atla</strong>
+            <p id="howto-s5-desc">Her 5 soruda zorluk otomatik artar. Ne kadar zor, o kadar çok puan! Rekoru kırmaya bak.</p>
+          </div>
+        </div>
+
+        <div class="howto-card">
+          <div class="howto-num">6</div>
+          <div class="howto-icon">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="24" cy="24" r="20" fill="#EEEDFE"/>
+              <circle cx="17" cy="20" r="5" fill="#534AB7" opacity="0.6"/>
+              <circle cx="31" cy="20" r="5" fill="#D85A30" opacity="0.6"/>
+              <path d="M24 26v8" stroke="#888" stroke-width="2" stroke-dasharray="3 2"/>
+            </svg>
+          </div>
+          <div class="howto-text">
+            <strong id="howto-s6-title">2 Oyuncu Modu</strong>
+            <p id="howto-s6-desc">İsimlerinizi girin, sırayla oynayın. Kim daha fazla puan yaparsa kazanır! Beraberlik de olabilir.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- İpuçları bölümü -->
+      <div class="tips-box">
+        <div class="tips-title" id="tips-title">Ipuçları</div>
+        <div class="tips-list" id="tips-list">
+          <div class="tip-item">
+            <div class="tip-dot purple"></div>
+            <span id="tip1">3+ arka arkaya doğru cevap = Ateş Serisi animasyonu!</span>
+          </div>
+          <div class="tip-item">
+            <div class="tip-dot green"></div>
+            <span id="tip2">Skor tablosu puanlarını kaydeder, tarayıcıyı kapatsan bile silinmez.</span>
+          </div>
+          <div class="tip-item">
+            <div class="tip-dot amber"></div>
+            <span id="tip3">TR / EN butonuyla dili istediğin zaman değiştirebilirsin.</span>
+          </div>
+          <div class="tip-item">
+            <div class="tip-dot red"></div>
+            <span id="tip4">Sonuç ekranında Canvas grafiğiyle her sorunun süresini görebilirsin.</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="start-btn" onclick="goMenu()" style="margin-top:1rem;">
+        <span id="howto-start-btn">Oynamaya Başla</span>
+        <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       EKRAN 3: OYUN
+       Soru, seçenekler, zamanlayıcı, skor
+  ====================================================================== -->
+  <div id="screen-game" class="screen">
+    <div class="page-wrap game-wrap">
+
+      <!-- VS mod başlığı (2 oyuncu modunda görünür) -->
+      <div id="vs-header-wrap" style="display:none;">
+        <div class="vs-header">
+          <div class="vs-player" id="vsh-left">
+            <div class="vs-avatar p1-color" id="vsh-p1-av">P1</div>
+            <div class="vsh-name" id="vsh-p1n">P1</div>
+            <div class="vsh-score" id="vsh-p1s">0</div>
+          </div>
+          <div class="vs-center">
+            <div class="vs-vs-badge">VS</div>
+            <div class="vs-turn-lbl" id="vs-round-lbl"></div>
+          </div>
+          <div class="vs-player" id="vsh-right">
+            <div class="vs-avatar p2-color" id="vsh-p2-av">P2</div>
+            <div class="vsh-name" id="vsh-p2n">P2</div>
+            <div class="vsh-score p2-score" id="vsh-p2s">0</div>
+          </div>
+        </div>
+        <!-- Canlı skor denge çubuğu -->
+        <div class="vs-bar-wrap">
+          <div class="vs-bar-p1" id="vs-bar-p1" style="width:50%"></div>
+          <div class="vs-bar-p2" id="vs-bar-p2" style="width:50%"></div>
+        </div>
+      </div>
+
+      <!-- Oyun üst bilgi çubuğu -->
+      <div class="game-topbar">
+        <div class="game-badges">
+          <span class="badge purple-badge" id="cat-badge">Kategori</span>
+          <span class="badge diff-badge-live" id="diff-badge">Kolay</span>
+          <span class="score-pill" id="score-live">0 puan</span>
+        </div>
+        <!-- Dairesel geri sayım sayacı (Canvas destekli) -->
+        <div class="timer-wrap">
+          <canvas id="timer-canvas" width="56" height="56"></canvas>
+          <div class="timer-num" id="timer-num">20</div>
+        </div>
+      </div>
+
+      <!-- İlerleme çubuğu -->
+      <div class="progress-bar">
+        <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+        <div class="progress-label" id="prog-label">1/10</div>
+      </div>
+
+      <!-- Sıradaki oyuncu etiketi (VS mod) -->
+      <div class="cur-player-lbl" id="cur-player-lbl"></div>
+
+      <!-- Soru numarası ve metni -->
+      <div class="q-num" id="q-num">Soru 1/10</div>
+      <div class="q-card">
+        <div class="q-text" id="q-text">Soru yükleniyor...</div>
+      </div>
+
+      <!-- Cevap seçenekleri -->
+      <div class="opts-grid" id="opts-grid"></div>
+
+      <!-- Geri bildirim kutusu -->
+      <div class="feedback-box" id="fb-box"></div>
+
+      <!-- Sonraki soru butonu -->
+      <button class="next-btn" id="next-btn" onclick="nextQ()" style="display:none;">
+        <span id="next-lbl">Sonraki Soru</span>
+        <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+
+      <!-- Serisi (streak) rozeti -->
+      <div class="streak-anim" id="streak-badge" style="display:none;"></div>
+
+      <!-- Oyundan çıkış butonu -->
+      <button class="quit-btn" onclick="confirmQuit()" id="quit-lbl">Oyundan Çık</button>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       EKRAN 4: SONUÇ
+       Puan, istatistikler, Canvas skor grafiği ve seri bilgisi
+  ====================================================================== -->
+  <div id="screen-result" class="screen">
+    <div class="page-wrap">
+
+      <!-- Tek oyuncu sonuç paneli -->
+      <div id="result-solo">
+        <!-- Sonuç başlığı ve puan dairesi -->
+        <div class="result-header">
+          <h2 id="r-title">Oyun Bitti!</h2>
+          <div class="score-ring">
+            <div class="score-big" id="r-score">0</div>
+            <div class="score-lbl" id="r-score-lbl">puan</div>
+          </div>
+        </div>
+
+        <!-- İstatistik kartları (6 adet, 3'lü grid) -->
+        <div class="stats-grid">
+          <div class="stat-card green-card">
+            <div class="stat-val" id="r-correct">0</div>
+            <div class="stat-lbl" id="r-correct-lbl">Doğru</div>
+          </div>
+          <div class="stat-card red-card">
+            <div class="stat-val" id="r-wrong">0</div>
+            <div class="stat-lbl" id="r-wrong-lbl">Yanlış</div>
+          </div>
+          <div class="stat-card purple-card">
+            <div class="stat-val" id="r-acc">0%</div>
+            <div class="stat-lbl" id="r-acc-lbl">Başarı</div>
+          </div>
+          <div class="stat-card amber-card">
+            <div class="stat-val" id="r-streak">0</div>
+            <div class="stat-lbl" id="r-streak-lbl">En uzun seri</div>
+          </div>
+          <div class="stat-card blue-card">
+            <div class="stat-val" id="r-time">0s</div>
+            <div class="stat-lbl" id="r-time-lbl">Ort. süre</div>
+          </div>
+          <div class="stat-card gray-card">
+            <div class="stat-val" id="r-best">—</div>
+            <div class="stat-lbl" id="r-best-lbl">En iyi skor</div>
+          </div>
+        </div>
+
+        <!-- Canvas ile çizilen skor grafiği -->
+        <div class="chart-section">
+          <div class="chart-title" id="chart-title">Her Sorunun Cevap Süresi</div>
+          <canvas id="result-canvas" height="120"></canvas>
+        </div>
+
+        <!-- Sonuç mesajı -->
+        <div class="result-msg" id="r-msg"></div>
+      </div>
+
+      <!-- İki oyuncu sonuç paneli -->
+      <div id="result-vs" style="display:none;">
+        <!-- Kazanan banner -->
+        <div class="winner-banner" id="winner-banner">
+          <div class="winner-icon" id="winner-icon">
+            <!-- Kupa SVG -->
+            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20 8h24v20c0 9-6 16-12 18C26 44 20 37 20 28V8z" fill="#EF9F27" opacity="0.9"/>
+              <path d="M20 12H10c0 8 4 14 10 16" stroke="#854F0B" stroke-width="2" stroke-linecap="round"/>
+              <path d="M44 12h10c0 8-4 14-10 16" stroke="#854F0B" stroke-width="2" stroke-linecap="round"/>
+              <rect x="28" y="46" width="8" height="8" fill="#EF9F27" opacity="0.7"/>
+              <rect x="22" y="54" width="20" height="4" rx="2" fill="#854F0B" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="winner-txt" id="winner-txt"></div>
+          <div class="winner-sub" id="winner-sub"></div>
+        </div>
+
+        <!-- VS oyuncu karşılaştırma kartları -->
+        <div class="vs-result-grid">
+          <div class="vs-rc p1-rc">
+            <div class="vsrc-av p1-color" id="rv-p1-av">P1</div>
+            <div class="vsrc-name" id="rv-p1n">Oyuncu 1</div>
+            <div class="vsrc-score" id="rv-p1s">0</div>
+            <div class="vsrc-detail" id="rv-p1c">0 doğru</div>
+          </div>
+          <div class="vs-rc p2-rc">
+            <div class="vsrc-av p2-color" id="rv-p2-av">P2</div>
+            <div class="vsrc-name" id="rv-p2n">Oyuncu 2</div>
+            <div class="vsrc-score p2-score" id="rv-p2s">0</div>
+            <div class="vsrc-detail" id="rv-p2c">0 doğru</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Eylem butonları -->
+      <div class="result-btns">
+        <button class="btn-secondary" onclick="goLB()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+          <span id="btn-lb">Tablo</span>
+        </button>
+        <button class="btn-secondary" onclick="goMenu()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3"/>
+          </svg>
+          <span id="btn-menu">Menü</span>
+        </button>
+        <button class="btn-primary" onclick="startGame()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+          <span id="btn-again">Tekrar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       EKRAN 5: SKOR TABLOSU
+       Kaydedilmiş yüksek puanlar, kategoriye göre filtre
+  ====================================================================== -->
+  <div id="screen-lb" class="screen">
+    <div class="page-wrap">
+      <div class="back-bar">
+        <button class="back-btn" onclick="goMenu()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          <span>Menü</span>
+        </button>
+        <h2 id="lb-title">Skor Tablosu</h2>
+      </div>
+
+      <!-- Kategori filtre sekmeleri -->
+      <div class="tab-row" id="lb-tabs"></div>
+
+      <!-- Skor listesi -->
+      <div id="lb-list"></div>
+
+      <button class="btn-danger" style="width:100%;margin-top:1rem;"
+        onclick="if(confirm('Tüm skorlar silinsin mi?')){clearLB();}">
+        <span id="lbl-clear">Tabloyu Temizle</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       OVERLAY'LER: Combo animasyonu, Level Up, Canvas konfeti
+  ====================================================================== -->
+
+  <!-- Seri / combo metin animasyonu -->
+  <div id="combo-overlay" style="display:none; position:fixed; top:35%; left:50%;
+    transform:translate(-50%,-50%); z-index:999; pointer-events:none;
+    font-size:2rem; font-weight:800; color:#534AB7;
+    text-shadow:0 2px 12px rgba(83,74,183,.4); white-space:nowrap;"></div>
+
+  <!-- Level Up popup -->
+  <div id="levelup-overlay" style="display:none; position:fixed; inset:0;
+    background:rgba(0,0,0,.5); z-index:1000; align-items:center; justify-content:center;">
+    <div class="levelup-box">
+      <div class="levelup-icon-wrap">
+        <!-- Yukarı ok SVG -->
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="32" cy="32" r="28" fill="#534AB7"/>
+          <path d="M32 44V22M22 32l10-10 10 10" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="levelup-txt" id="levelup-txt">Seviye Atladın!</div>
+      <div class="levelup-sub" id="levelup-sub">Zorluk arttı</div>
+    </div>
+  </div>
+
+  <!-- Canvas konfeti (tam ekran canvas) -->
+  <canvas id="confetti-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:998;display:none;"></canvas>
+
+  <!-- JS dosyaları — HTML'den sonra yükle -->
+  <script src="js/questions.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
