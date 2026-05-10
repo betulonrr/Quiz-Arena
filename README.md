@@ -10,7 +10,7 @@ HTML5 · CSS3 · Vanilla JavaScript · Web Audio API · Canvas API
 Oyun; menü ekranı, canlı quiz ekranı ve animasyonlu sonuç ekranından oluşur.
 Tek oyunculu rekor modu ve aynı cihazda 2 oyunculu düello modu desteklenmektedir.
 
-🚀 Özellikler
+  Özellikler
 
  8 Kategori — Karışık, Bilim, Tarih, Genel Kültür, Spor, Coğrafya, Teknoloji, Matematik
  3 Zorluk Seviyesi — Kolay (20sn/+10p) · Orta (15sn/+20p) · Zor (10sn/+30p)
@@ -41,7 +41,7 @@ TeknolojiKullanım AmacıHTML5 CanvasZamanlayıcı, skor grafiği, konfeti anima
 Harici kütüphane veya framework kullanılmamıştır.
 
 
-🎮 Nasıl Oynanır
+ Nasıl Oynanır
 
 Oyuncu adını gir, mod seç (Tek / 2 Oyuncu)
 Kategori, zorluk ve soru sayısını belirle
@@ -51,7 +51,7 @@ Oyun sonunda istatistiklerini ve cevap süresi grafiğini incele
 Rekoru kırmak için tekrar oyna!
 
 
-📝 Notlar
+ Notlar
 
 Kodlar bölüm başlıklarıyla ayrılmış ve yorum satırlarıyla açıklanmıştır
 Tüm ekranlar tek index.html içinde yönetilmekte, JS ile görünürlük toggle edilmektedir
